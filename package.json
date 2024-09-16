@@ -2,7 +2,7 @@
   "name": "mcmasterful-books",
   "version": "1.0.0",
   "description": "This is a template repository for the first assignment in BVD 103 at McMaster Continuing Education.",
-  "main": "index.js",
+  "main": "index.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start-server": "ts-node ./src/index.ts",
