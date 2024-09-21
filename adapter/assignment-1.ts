@@ -1,35 +1,33 @@
-export interface Book {
-    name: string,
-    author: string,
-    description: string,
-    price: number,
-    image: string,
-};
+import booksData from '../../mcmasterful-book-list.json';
 
+export interface Book {
+    name: string;
+    author: string;
+    description: string;
+    price: number;
+    image: string;
+}
 
 // If you have multiple filters, a book matching any of them is a match.
-async function listBooks(filters?: Array<{from?: number, to?: number}>) : Promise<Book[]>{
-    console.log(filters)
-    if (filters) {
-        if (filters.length === 0 ){
-            const books = await fetch("http://localhost:3000/books");
-            //console.log(books.json());
-            return books.json() as Promise<Book[]>;
-        } else {
-            const books = await fetch("http://localhost:3000/books/filter", {
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                method: "POST",
-                body: JSON.stringify(filters),
-            })
-            return books.json() as Promise<Book[]>;
-        }
-    } else {
-        return new Promise<Book[]>((resolve) => {
-            resolve([]);
+async function listBooks(filters?: Array<{ from?: number; to?: number }>): Promise<Book[]> {
+    let books: Book[] = booksData;
+
+    if (filters && filters.length > 0) {
+        books = books.filter(book => {
+            return filters.some(filter => {
+                const from = filter.from ?? 0;
+                const to = filter.to ?? Number.MAX_VALUE;
+
+                if (isNaN(from) || isNaN(to) || from < 0 || to < 0 || from > to) {
+                    throw new Error('Invalid price range provided.');
+                }
+
+                return book.price >= from && book.price <= to;
+            });
         });
-    }    
+    }
+
+    return books;
 }
 
 const assignment = "assignment-1";

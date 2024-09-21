@@ -1,10 +1,9 @@
 import Router from 'koa-router';
-import { getAllBooks, filterBooks, addBook } from '../controllers/bookController';
+import { BookController } from '../controllers/bookController';
 
 const router = new Router();
+const bookController = new BookController();
 
-router.get('/books', getAllBooks);       // Get all books
-router.post('/books/filter', filterBooks); // Filter books by price
-router.post('/books', addBook);          // Add a new book
+router.get('/api/books', bookController.getBooks.bind(bookController));
 
 export default router;

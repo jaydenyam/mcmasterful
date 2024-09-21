@@ -1,7 +1,7 @@
 import Koa from 'koa';
 import bodyParser from 'koa-bodyparser';
 import cors from '@koa/cors';
-import bookRoutes from './routes/bookRoutes';
+import assignment1Routes from './adapter/assignment-1';
 
 const app = new Koa();
 
@@ -9,10 +9,16 @@ const app = new Koa();
 app.use(cors());
 app.use(bodyParser());
 
-// Register the routes
-app.use(bookRoutes.routes()).use(bookRoutes.allowedMethods());
+// Routes
+app.use(assignment1Routes.routes()).use(assignment1Routes.allowedMethods());
 
-const port = 3000;
-app.listen(port, () => {
-  console.log(`Server is running on http://localhost:${port}`);
+// Error logging
+app.on('error', (err, ctx) => {
+    console.error('server error', err, ctx);
+});
+
+// Start the server
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
 });
