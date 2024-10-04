@@ -1,5 +1,7 @@
 import fs from 'fs';
 import path from 'path';
+import { Context } from 'koa';
+import { listBooks, Book } from '../../adapter/assignment-1';
 
 // Define the Book type
 type Book = {
@@ -50,3 +52,35 @@ export const addBook = (ctx: any) => {
   books.push(newBook);
   ctx.body = { message: 'Book added successfully' };
 };
+
+// Define BookController class
+export class BookController {
+  public async getBooks(ctx: Context): Promise<void> {
+    try {
+      const { minPrice, maxPrice } = ctx.query;
+
+      const filters = [];
+      if (minPrice !== undefined || maxPrice !== undefined) {
+        const from = minPrice ? parseFloat(minPrice as string) : 0;
+        const to = maxPrice ? parseFloat(maxPrice as string) : Number.MAX_VALUE;
+
+        if (isNaN(from) || isNaN(to) || from < 0 || to < 0 || from > to) {
+          ctx.status = 400;
+          ctx.body = { error: 'Invalid price range provided.' };
+          return;
+        }
+
+        filters.push({ from, to });
+      }
+
+      const books: Book[] = await listBooks(filters);
+      ctx.status = 200;
+      ctx.body = books;
+    } catch (error) {
+      ctx.status = 500;
+      ctx.body = { error: error.message || 'Internal server error.' };
+    }
+  }
+}
+
+export default BookController;

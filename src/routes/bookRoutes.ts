@@ -1,5 +1,5 @@
 import Router from 'koa-router';
-import { BookController } from '../controllers/bookController';
+import BookController from '../controllers/bookController';
 
 const router = new Router();
 const bookController = new BookController();
